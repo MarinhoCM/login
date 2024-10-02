@@ -1,0 +1,33 @@
+.card-small {
+  max-width: 300px;
+  max-height: 300px;
+  margin: 0 auto;
+}
+
+.card-small img {
+  height: 150px;
+  object-fit: cover;
+}
+
+.carousel-item .col-md-4 {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: black;
+  border-radius: 50%;
+}
+
+footer.bg-light {
+  margin-top: 20px;
+}
