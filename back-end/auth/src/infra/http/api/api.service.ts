@@ -10,9 +10,7 @@ export class ApiService {
         private readonly prismaService: PrismaService,
     ) { }
 
-
     async login(data: LoginDto) {
-
         const { email, password } = data;
 
         const user = await this.prismaService.user.findUnique({
@@ -20,7 +18,7 @@ export class ApiService {
         });
 
         if (!user) {
-            throw new UnauthorizedException('Credenciais inválidas');
+            throw new UnauthorizedException('Usuário não encontrado');
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -29,7 +27,7 @@ export class ApiService {
         }
 
         const payload = { email: user.email, sub: user.id };
-        return { access_info: payload };
+        return { access_info: payload, message: 'Logado com sucesso' };
     }
 
     async create(userData: CreateUserDto) {
@@ -39,19 +37,18 @@ export class ApiService {
             where: { email },
         });
 
-        if (user){
+        if (user) {
             throw new BadRequestException(`O email: ${email} já existe, tente realizar o login`)
         } else {
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (!isPasswordValid) {
-                throw new UnauthorizedException('Credenciais inválidas');
-            }
+            const hashedPassword = await bcrypt.hash(password, 10);
 
             const createdUser = await this.prismaService.user.create({
-                data: userData
+                data: {
+                    ...userData,
+                    password: hashedPassword,
+                },
             });
-
-            return {data: createdUser, message: 'Usuário criado com sucesso!'}
+            return { data: createdUser, message: 'Usuário criado com sucesso!' };
         }
     }
 }
